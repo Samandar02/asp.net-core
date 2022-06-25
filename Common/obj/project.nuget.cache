@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "o/tMFmqz9+/rRVfuE/TSs/akYZwhPQSLDqonsQjh0IFmHXOY0vHXqtez02O5VSKvLM9L6cBj84gtM5TPp+Uixg==",
+  "success": true,
+  "projectFilePath": "C:\\repositories\\ASP.Net core\\Common\\Common.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\NOVO\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\NOVO\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\NOVO\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\NOVO\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\NOVO\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\NOVO\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
