@@ -1,36 +1,41 @@
-using Common;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var Configuration = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options=>options.UseInMemoryDatabase("MyDb"));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.AddAuthentication(option =>
+builder.Services.AddDbContext<AppDbContext>(options=>options.UseInMemoryDatabase(Configuration["ConnectionStrings:MockDb"]));
+builder.Services.AddIdentity<IdentityUser,IdentityRole>()
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options=>
 {
-    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(cfg =>
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(cfg=>
 {
     cfg.RequireHttpsMetadata = false;
     cfg.SaveToken = true;
-    cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+    cfg.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["secretKey"]))
+        ValidateAudience = true,
+        ValidateIssuer = true,
+        ValidAudience = Configuration["Valids:Audience"],
+        ValidIssuer = Configuration["Valids:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
     };
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -46,8 +51,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Authentication & Authorization
+
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.Run();

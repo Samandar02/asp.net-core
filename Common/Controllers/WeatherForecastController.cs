@@ -1,13 +1,15 @@
-
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Common.Controllers;
 
 [ApiController]
+[Route("[controller]/[action]")]
 [Authorize]
-[Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
@@ -15,18 +17,11 @@ public class WeatherForecastController : ControllerBase
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-    private readonly ILogger<WeatherForecastController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    [HttpGet()]
+    [Authorize(Roles="user")]
+    public IEnumerable<WeatherForecast> GetUser()
     {
-        _logger = logger;
-    }
-
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
-    {
-        _logger.Log(LogLevel.Critical,new EventId(),new Exception(),"log yozildi");
-        
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateTime.Now.AddDays(index),
@@ -35,4 +30,16 @@ public class WeatherForecastController : ControllerBase
         })
         .ToArray();
     }
+    [HttpGet()]
+    [Authorize(Roles="admin")]
+    public WeatherForecast GetAdmin()
+    {
+        return new WeatherForecast
+        {
+            Date = DateTime.Now,
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value,
+        };
+    }
+
 }
